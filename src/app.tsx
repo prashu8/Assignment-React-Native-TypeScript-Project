@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
 import themeReducers from './store/reducers/theme';
+import AppNavigator from './navigation/AppNavigator';
 
 
 
@@ -24,7 +25,7 @@ export class App extends React.Component<Props, State> {
   render() {
     return (
       <Provider store={store}>
-        <DemoScreen/>
+        <AppNavigator/>
       </Provider>
     );
   }
