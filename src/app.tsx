@@ -1,13 +1,11 @@
 import * as React from 'react'
 import DemoScreen from './DemoScreen';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import ReduxThunk from 'redux-thunk';
+import { createStore, combineReducers } from 'redux';
 
 
 import themeReducers from './store/reducers/theme';
 import AppNavigator from './navigation/AppNavigator';
-import apisReducers from './store/reducers/apis';
 
 
 
@@ -17,11 +15,10 @@ export interface State { }
 
 
 const rootReducer = combineReducers({
-  theme: themeReducers,
-  apis: apisReducers
+  theme: themeReducers
 });
 
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+const store = createStore(rootReducer);
 
 
 export class App extends React.Component<Props, State> {

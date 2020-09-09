@@ -6,23 +6,21 @@ import {
     TextInput,
     Platform
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-community/async-storage';
+import { useSelector } from 'react-redux';
 
 import TouchableButton from '../components/TouchableButton';
-import { loginUser } from '../store/actions/apis';
+import URLConstants from '../constants/URLConstants';
+
 
 
 const LoginScreen = props => {
 
-    const dispatch = useDispatch();
+
 
     // get theme from redux
     const theme = useSelector(state => state.theme.theme);
 
 
-    // get userLogin res from redux thunk
-    const userLogin = useSelector(state => state.apis.userLogin);
 
     const [mobileNo, setMobileNo] = useState('');
     const [password, setPassword] = useState('');
@@ -36,32 +34,34 @@ const LoginScreen = props => {
         setMobileNo(text);
     };
 
-    const storeDataOnAsync = async (id) => {
-        try {
-            await AsyncStorage.setItem('userToken', id)
-        } catch (e) {
-            console.log(e);
-        }
-    };
+   
 
-    const onClickLoginButton = (userName, password) => {
+    const onClickLoginButton = () => {
 
         if (mobileNo.trim() != "" && password.trim() != "") {
 
             try {
-                dispatch(loginUser(userName, password));
+                fetch(URLConstants.LOGIN_URL, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: mobileNo,
+                        password: password
+                    })
+                })
+                    .then((response) => response.json())
+                    .then((res) => {
+                        console.log("RES for login data", res);
+                        if (res.message == "login successfull") {
+                            props.navigation.replace('UserProfile', { id: res._id })
+                        }
+                    })
             } catch (error) {
-                console.log(" error", error);
-
+                console.error("ERROR", error);
             }
-
-            if (userLogin.message == "login successfull") {
-                props.navigation.replace('UserProfile', { id: userLogin._id });
-                // storeDataOnAsync(userLogin._id);
-            }
-
-            console.log("++++", userLogin);
-
 
         } else {
             alert("Please fill all the fields correctly.")
@@ -111,16 +111,13 @@ const LoginScreen = props => {
 
                         <TouchableButton
                             onButtonClick={() => {
-                                onClickLoginButton(mobileNo, password)
+                                onClickLoginButton();
                             }}
                             buttonStyle={{ ...theme.defaultButton, width: "40%" }}
                             buttonTextStyle={theme.defaultButtonText}
                             buttonText="LOGIN" />
 
-                        <Text
-                            onPress={() => { props.navigation.navigate('SignUp'); }}
-                            style={{ color: '#000', fontSize: 15, marginVertical: 10, textDecorationLine: 'underline' }}>
-                            don't have an account?</Text>
+
                     </View>
                 </ScrollView>
             </SafeAreaView>

@@ -2,44 +2,65 @@ import React, { useState, useEffect } from 'react';
 import {
     View, Text, StyleSheet,
     StatusBar, SafeAreaView,
-    TouchableOpacity, ScrollView,
-    TextInput,
+    TouchableOpacity,
     Platform
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
+import URLConstants from '../constants/URLConstants';
+import { KEY_USER_TOKEN } from '../constants/AppDefine';
 
-import TouchableButton from '../components/TouchableButton';
-import { userProfile } from '../store/actions/apis';
 
 
 const UserProfile = props => {
-
-    const dispatch = useDispatch();
-
-
-    // get userSignUp res from redux thunk
-    const profile = useSelector(state => state.apis.profile);
 
 
     // get theme from redux
     const theme = useSelector(state => state.theme.theme);
 
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
+    const [profileData, setProfileData] = useState({});
 
     // props.route.params
 
     useEffect(() => {
         getProfileData();
-        
-    }, [getProfileData]);
+        storeDataOnAsync(props.route.params.id)
 
+    }, [getProfileData, storeDataOnAsync]);
+
+
+
+    const storeDataOnAsync = (id) => {
+        try {
+            AsyncStorage.setItem(KEY_USER_TOKEN, id)
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
 
     const getProfileData = () => {
-        dispatch(userProfile(props.route.params.id));
+        try {
+            fetch(URLConstants.USER_PROFILE_URL + props.route.params.id, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((res) => {
+                    console.log("RES for profile data", res.data);
+                    setProfileData(res.data);
+
+                })
+        } catch (error) {
+            console.error("ERROR", error);
+        }
+
+
     }
 
     const passwordValueHandler = text => {
@@ -70,17 +91,17 @@ const UserProfile = props => {
                         <View style={theme.profileTextView}>
                             <Text
                                 style={theme.profileMainText}>Full Name : </Text>
-                            {/* <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profile.data.fullname}</Text> */}
+                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profileData.fullname}</Text>
                         </View>
                         <View style={theme.profileTextView}>
                             <Text
                                 style={theme.profileMainText}>Email : </Text>
-                            {/* <Text style={{ ...theme.prodprofileSubTextuctDetailSubText, margin: 10, width: "95%" }}>{profile.data.email}</Text> */}
+                            <Text style={{ ...theme.profileSubText, margin: 10, width: "50%" }}>{profileData.email}</Text>
                         </View>
                         <View style={theme.profileTextView}>
                             <Text
                                 style={theme.profileMainText}>Mobile No / Username : </Text>
-                            {/* <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profile.data.mobileNo}</Text> */}
+                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profileData.mobileNo}</Text>
                         </View>
                     </View>
 
@@ -88,6 +109,20 @@ const UserProfile = props => {
             </SafeAreaView>
         </>
     );
+}
+
+export const screenOptions = navData => {
+
+    return {
+        title: "Profile",
+        headerRight: () => (
+            <TouchableOpacity
+                onPress={() => { navData.navigation.replace('Login') }}
+                style={{ alignSelf: 'center', paddingRight: 20 }}>
+                <Text style={{ fontSize: 15, fontWeight: "bold", color: "#000" }}>LOG OUT</Text>
+            </TouchableOpacity>
+        )
+    }
 }
 
 const styles = StyleSheet.create({});
