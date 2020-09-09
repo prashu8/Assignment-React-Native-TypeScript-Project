@@ -30,6 +30,9 @@ export const loginUser = (username, password) => {
 
         const loginResponse = resData;
 
+        console.log("LOGIN_USER loginResponse", loginResponse);
+
+
         dispatch({ type: LOGIN_USER, payload: loginResponse });
     };
 };

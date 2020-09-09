@@ -48,12 +48,20 @@ const LoginScreen = props => {
 
         if (mobileNo.trim() != "" && password.trim() != "") {
 
-            dispatch(loginUser(userName, password));
+            try {
+                dispatch(loginUser(userName, password));
+            } catch (error) {
+                console.log(" error", error);
+
+            }
 
             if (userLogin.message == "login successfull") {
                 props.navigation.replace('UserProfile', { id: userLogin._id });
-                storeDataOnAsync(userLogin._id);
+                // storeDataOnAsync(userLogin._id);
             }
+
+            console.log("++++", userLogin);
+
 
         } else {
             alert("Please fill all the fields correctly.")
