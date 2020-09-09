@@ -20,7 +20,7 @@ const UserProfile = props => {
 
 
     // get userSignUp res from redux thunk
-    const userProfile = useSelector(state => state.apis.userProfile);
+    const profile = useSelector(state => state.apis.userProfile);
 
 
 
@@ -33,8 +33,15 @@ const UserProfile = props => {
     // props.route.params
 
     useEffect(() => {
+        getProfileData();
+        
+    }, [getProfileData]);
+
+
+
+    const getProfileData = () => {
         dispatch(userProfile(props.route.params.id));
-    }, []);
+    }
 
     const passwordValueHandler = text => {
         setPassword(text);
@@ -64,17 +71,17 @@ const UserProfile = props => {
                         <View style={theme.profileTextView}>
                             <Text
                                 style={theme.profileMainText}>Full Name : </Text>
-                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>It's Features</Text>
+                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profile.data.fullname}</Text>
                         </View>
                         <View style={theme.profileTextView}>
                             <Text
                                 style={theme.profileMainText}>Email : </Text>
-                            <Text style={{ ...theme.prodprofileSubTextuctDetailSubText, margin: 10, width: "95%" }}>It's Specification</Text>
+                            <Text style={{ ...theme.prodprofileSubTextuctDetailSubText, margin: 10, width: "95%" }}>{profile.data.email}</Text>
                         </View>
                         <View style={theme.profileTextView}>
                             <Text
-                                style={theme.profileMainText}>Mobile No : </Text>
-                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>It's Applications</Text>
+                                style={theme.profileMainText}>Mobile No / Username : </Text>
+                            <Text style={{ ...theme.profileSubText, margin: 10, width: "95%" }}>{profile.data.mobileNo}</Text>
                         </View>
                     </View>
 

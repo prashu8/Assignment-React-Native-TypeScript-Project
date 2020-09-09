@@ -7,7 +7,7 @@ import {
     Platform
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 import TouchableButton from '../components/TouchableButton';
 import { loginUser } from '../store/actions/apis';
@@ -36,6 +36,13 @@ const LoginScreen = props => {
         setMobileNo(text);
     };
 
+    const storeDataOnAsync = async (id) => {
+        try {
+            await AsyncStorage.setItem('userToken', id)
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     const onClickLoginButton = (userName, password) => {
 
@@ -43,9 +50,10 @@ const LoginScreen = props => {
 
             dispatch(loginUser(userName, password));
 
-            console.log("Res : ", userLogin);
-
-            
+            if (userLogin.message == "login successfull") {
+                props.navigation.replace('UserProfile', { id: userLogin._id });
+                storeDataOnAsync(userLogin._id);
+            }
 
         } else {
             alert("Please fill all the fields correctly.")

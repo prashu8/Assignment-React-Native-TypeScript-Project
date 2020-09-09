@@ -49,13 +49,13 @@ const THEME = {
         "backgroundColor": "#fff"
     },
     "profileMainText": {
-        "fontSize": 15,
+        "fontSize": 20,
         "fontWeight": "bold",
         "width": '40%',
         "color": "#000"
     },
     "profileSubText": {
-        "fontSize": 15,
+        "fontSize": 20,
         "color": "#747474",
         "width": "40%"
     },

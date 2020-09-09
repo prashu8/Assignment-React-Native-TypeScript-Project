@@ -25,11 +25,12 @@ export const loginUser = (username, password) => {
         });
 
         const resData = await response.json();
-      
-        console.log("LOGIN_USER", resData);
-        
 
-        dispatch({ type: LOGIN_USER, payload: resData });
+        console.log("LOGIN_USER", resData);
+
+        const loginResponse = resData;
+
+        dispatch({ type: LOGIN_USER, payload: loginResponse });
     };
 };
 
@@ -43,9 +44,10 @@ export const userProfile = (userId) => {
         const response = await fetch(URLConstants.USER_PROFILE_URL + userId);
 
         const resData = await response.json();
-      
+
         console.log("USER_PROFILE", resData);
-        
+
+
 
         dispatch({ type: USER_PROFILE, payload: resData });
     };
