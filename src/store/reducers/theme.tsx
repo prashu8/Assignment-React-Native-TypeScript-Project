@@ -1,4 +1,4 @@
-import { UPDATE_THEME } from '../action/theme';
+import { UPDATE_THEME } from '../actions/theme';
 import THEME from '../../model/theme';
 
 

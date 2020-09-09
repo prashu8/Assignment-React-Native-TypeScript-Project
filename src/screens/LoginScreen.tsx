@@ -1,40 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     View, Text, StyleSheet,
     StatusBar, SafeAreaView,
-    TouchableOpacity, ScrollView,
+    ScrollView,
     TextInput,
     Platform
 } from 'react-native';
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
 
 
 import TouchableButton from '../components/TouchableButton';
+import { loginUser } from '../store/actions/apis';
 
 
 const LoginScreen = props => {
 
-    // get Venue theme from redux
+    const dispatch = useDispatch();
+
+    // get theme from redux
     const theme = useSelector(state => state.theme.theme);
 
-    const [userName, setUserName] = useState('');
+
+    // get userLogin res from redux thunk
+    const userLogin = useSelector(state => state.apis.userLogin);
+
+    const [mobileNo, setMobileNo] = useState('');
     const [password, setPassword] = useState('');
 
-
-    useEffect(() => {
-
-    }, []);
 
     const passwordValueHandler = text => {
         setPassword(text);
     };
 
-    const userNameValueHandler = text => {
-        setUserName(text);
+    const mobileNoValueHandler = text => {
+        setMobileNo(text);
     };
 
 
+    const onClickLoginButton = (userName, password) => {
+
+        if (mobileNo.trim() != "" && password.trim() != "") {
+
+            dispatch(loginUser(userName, password));
+
+            console.log("Res : ", userLogin);
+
+            
+
+        } else {
+            alert("Please fill all the fields correctly.")
+        }
+
+    }
 
     return (
         <>
@@ -58,11 +75,11 @@ const LoginScreen = props => {
                         {/* This is UserName TextInput */}
                         <TextInput
                             style={theme.defaultTextInput}
-                            onChangeText={userNameValueHandler}
-                            // editable={editEmail}
+                            onChangeText={mobileNoValueHandler}
+                            keyboardType="phone-pad"
                             placeholderTextColor={theme.defaultTextInputPlaceholderTextColor.color}
-                            placeholder={'Username'}
-                            value={userName} />
+                            placeholder={'Mobile No'}
+                            value={mobileNo} />
 
 
 
@@ -78,16 +95,16 @@ const LoginScreen = props => {
 
                         <TouchableButton
                             onButtonClick={() => {
-                                props.navigation.replace('UserProfile');
+                                onClickLoginButton(mobileNo, password)
                             }}
                             buttonStyle={{ ...theme.defaultButton, width: "40%" }}
                             buttonTextStyle={theme.defaultButtonText}
                             buttonText="LOGIN" />
 
                         <Text
-                        onPress={() => {props.navigation.navigate('SignUp');}}
+                            onPress={() => { props.navigation.navigate('SignUp'); }}
                             style={{ color: '#000', fontSize: 15, marginVertical: 10, textDecorationLine: 'underline' }}>
-                            Have an account?</Text>
+                            don't have an account?</Text>
                     </View>
                 </ScrollView>
             </SafeAreaView>
